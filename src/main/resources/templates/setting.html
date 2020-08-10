@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SocialV - Responsive Bootstrap 4 Admin Dashboard Template</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="images/favicon.ico" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Typography CSS -->
+    <link rel="stylesheet" href="css/typography.css">
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/selectric.css">
+    <link rel="stylesheet" href="css/croppie.css">
+</head>
+<body class="sidebar-main-active right-column-fixed">
+<!-- modal -->
+<div id="crop-avatar" class="modal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row" id="croppie-avatar">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="custom-control custom-switch" style="margin-right: 50px">
+                    <input type="checkbox" class="custom-control-input" id="create-post-for-avatar">
+                    <label class="custom-control-label" for="create-post-for-avatar">Create Post</label>
+                </div>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Upload Avatar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalAccept" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Warning</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="modalContent">Are you sure you want to perform this action?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="buttonOK">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-notification" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Notification</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-notification-change-password-success" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Notification</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <a href="#" class="btn btn-primary">Yes</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-link-social" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row d-flex">
+                    <label for="input-social-link" class="col-2 my-auto">URL</label>
+                    <input type="text" class="form-control col-10" id="input-social-link" placeholder="Enter the url here">
+                    <div class="invalid-feedback text-right">The link is not valid</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal END -->
+<!-- loader Start -->
+<div id="loading">
+    <div id="loading-center">
+    </div>
+</div>
+<!-- loader END -->
+<!-- Wrapper Start -->
+<div class="wrapper">
+    <!-- Sidebar  -->
+    <div class="iq-sidebar">
+        <div id="sidebar-scrollbar">
+            <nav class="iq-sidebar-menu">
+                <ul id="iq-sidebar-toggle" class="iq-menu">
+                    <li class="active ytb-page-tab" id="ytb-page-index">
+                        <a href="/" class="iq-waves-effect"><i class="las la-newspaper"></i><span>Newsfeed</span></a>
+                    </li>
+                    <li class="ytb-page-tab" id="ytb-page-profile">
+                        <a href="/profile" class="iq-waves-effect"><i class="las la-user"></i><span>Profile</span></a>
+                    </li>
+                    <li class="ytb-page-tab" id="ytb-page-friend-list">
+                        <a href="/page/friend-list" class="iq-waves-effect"><i class="las la-user-friends"></i><span>Friend Lists</span></a>
+                    </li>
+                    <li class="ytb-page-tab" id="ytb-page-profile-images">
+                        <a href="/page/profile-images" class="iq-waves-effect"><i class="las la-image"></i><span>Profile Image</span></a>
+                    </li>
+                    <li class="ytb-page-tab" id="ytb-page-notification">
+                        <a href="/page/notification" class="iq-waves-effect"><i class="las la-bell"></i><span>Notification</span></a>
+                    </li>
+                    <li class="ytb-page-tab" id="ytb-page-friend-request">
+                        <a href="/page/friend-request" class="iq-waves-effect"><i class="las la-anchor"></i><span>Friend Request</span></a>
+                    </li>
+                    <li class="ytb-page-tab" id="ytb-page-chat">
+                        <a href="/chat" class="iq-waves-effect"><i class="lab la-rocketchat"></i><span>Chat</span></a>
+                    </li>
+                    <li class="ytb-page-tab" id="ytb-page-birthday">
+                        <a href="/page/birthday" class="iq-waves-effect"><i class="las la-birthday-cake"></i><span>Birthday</span></a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="p-3"></div>
+        </div>
+    </div>
+    <!-- TOP Nav Bar -->
+    <div class="iq-top-navbar">
+        <div class="iq-navbar-custom">
+            <nav class="navbar navbar-expand-lg navbar-light p-0">
+                <div class="iq-navbar-logo d-flex justify-content-between">
+                    <a href="/">
+                        <img src="images/logo.png" class="img-fluid" alt="">
+                        <span>SocialV</span>
+                    </a>
+                    <div class="iq-menu-bt align-self-center">
+                        <div class="wrapper-menu">
+                            <div class="main-circle"><i class="ri-menu-line"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="iq-search-bar">
+                    <form action="#" class="searchbox">
+                        <input type="text" class="text search-input" placeholder="Type here to search user">
+                        <a class="search-link" href="#"><i class="ri-search-line"></i></a>
+                    </form>
+                </div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"  aria-label="Toggle navigation">
+                    <i class="ri-menu-3-line"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto navbar-list">
+                        <li>
+                            <a href="/profile" class="iq-waves-effect d-flex align-items-center">
+                                <img src="images/user/1.jpg" class="img-fluid rounded-circle mr-3 my-avatar" alt="user">
+                                <div class="caption">
+                                    <h6 class="mb-0 line-height my-firstName">Bni Cyst</h6>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/" class="iq-waves-effect d-flex align-items-center">
+                                <i class="ri-home-line"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="search-toggle iq-waves-effect" href="#" id="button-show-friend-request"><i class="ri-group-line"></i><span class="bg-danger dots" id="notify-new-friend-request" style="display: none"></span></a>
+                            <div class="iq-sub-dropdown iq-sub-dropdown-large">
+                                <div class="iq-card shadow-none m-0">
+                                    <div class="iq-card-body p-0">
+                                        <div class="bg-primary p-3" id="show-friend-request">
+                                            <h5 class="mb-0 text-white">Friend Request<small class="badge badge-light float-right pt-1">0</small></h5>
+                                        </div>
+                                        <div style="max-height:414px; overflow-y: auto">
+                                        </div>
+                                        <div class="text-center">
+                                            <a href="#" class="mr-3 btn text-primary" data-page="0" id="view-more-friend-request">View More Request</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="search-toggle iq-waves-effect" id="button-view-notifications">
+                                <i class="ri-notification-2-line"></i>
+                                <span class="bg-danger dots" style="display: none"></span>
+                            </a>
+                            <div class="iq-sub-dropdown" style="width: 450px">
+                                <div class="iq-card shadow-none m-0">
+                                    <div class="iq-card-body p-0 ">
+                                        <div class="bg-primary p-3">
+                                            <h5 class="mb-0 text-white">All Notifications<small class="badge  badge-light float-right pt-1">4</small></h5>
+                                        </div>
+                                        <div id="show-notifications-default" style="max-height: 300px; overflow: auto">
+                                        </div>
+                                        <div class="text-center">
+                                            <a href="#" class="mr-3 btn text-primary" data-page="0" id="view-more-notifications">View More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="#" class="search-toggle iq-waves-effect" id="button-view-notification-messages">
+                                <i class="ri-message-2-line"></i>
+                                <span class="bg-danger dots" style="display: none"></span>
+                            </a>
+                            <div class="iq-sub-dropdown" style="width: 450px">
+                                <div class="iq-card shadow-none m-0">
+                                    <div class="iq-card-body p-0 ">
+                                        <div class="bg-primary p-3">
+                                            <h5 class="mb-0 text-white">All Messages<small class="badge  badge-light float-right pt-1" id="number-messages-unseen">5</small></h5>
+                                        </div>
+                                        <div id="area-show-notification-messages" style="max-height: 300px; overflow-y: auto; padding-bottom: 3%">
+
+                                        </div>
+                                        <div class="text-center">
+                                            <a href="#" class="mr-3 btn text-primary" id="view-more-notification-messages">View More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="navbar-list">
+                        <li>
+                            <a href="#" class="search-toggle iq-waves-effect d-flex align-items-center">
+                                <i class="ri-arrow-down-s-fill"></i>
+                            </a>
+                            <div class="iq-sub-dropdown iq-user-dropdown">
+                                <div class="iq-card shadow-none m-0">
+                                    <div class="iq-card-body p-0 ">
+                                        <div class="bg-primary p-3 line-height">
+                                            <h5 class="mb-0 text-white line-height">Hello <span class="my-firstName"></span></h5>
+                                            <span class="text-white font-size-12">Available</span>
+                                        </div>
+                                        <a href="/profile" class="iq-sub-card iq-bg-primary-hover">
+                                            <div class="media align-items-center">
+                                                <div class="rounded iq-card-icon iq-bg-primary">
+                                                    <i class="ri-file-user-line"></i>
+                                                </div>
+                                                <div class="media-body ml-3">
+                                                    <h6 class="mb-0 ">My Profile</h6>
+                                                    <p class="mb-0 font-size-12">View personal profile details.</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a href="/setting" class="iq-sub-card iq-bg-warning-hover">
+                                            <div class="media align-items-center">
+                                                <div class="rounded iq-card-icon iq-bg-warning">
+                                                    <i class="ri-profile-line"></i>
+                                                </div>
+                                                <div class="media-body ml-3">
+                                                    <h6 class="mb-0 ">Edit Profile</h6>
+                                                    <p class="mb-0 font-size-12">Modify your personal details.</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <div class="d-inline-block w-100 text-center p-3">
+                                            <a class="bg-primary iq-sign-btn" th:href="@{/logout}" role="button">Sign out<i class="ri-login-box-line ml-2"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- TOP Nav Bar END -->
+    <!-- Right Sidebar Panel Start-->
+    <div class="right-sidebar-mini right-sidebar">
+        <div class="right-sidebar-panel p-0">
+            <div class="iq-card shadow-none">
+                <div class="iq-card-body p-0">
+                    <div class="media-height p-3" id="show-nav-card-friend">
+                    </div>
+                    <div class="right-sidebar-toggle bg-primary mt-3">
+                        <i class="ri-arrow-left-line side-left-icon"></i>
+                        <i class="ri-arrow-right-line side-right-icon"><span class="ml-3 d-inline-block">Close Menu</span></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Right Sidebar Panel End-->
+    <!-- Page Content  -->
+    <div id="content-page" class="content-page">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="iq-card">
+                        <div class="iq-card-body p-0">
+                            <div class="iq-edit-list">
+                                <ul class="iq-edit-profile d-flex nav nav-pills">
+                                    <li class="col-md-3 p-0">
+                                        <a class="nav-link active" data-toggle="pill" href="#personal-information">
+                                            Personal Information
+                                        </a>
+                                    </li>
+                                    <li class="col-md-3 p-0">
+                                        <a class="nav-link" data-toggle="pill" href="#chang-pwd">
+                                            Change Password
+                                        </a>
+                                    </li>
+                                    <li class="col-md-3 p-0">
+                                        <a class="nav-link" data-toggle="pill" href="#history">
+                                            History
+                                        </a>
+                                    </li>
+                                    <li class="col-md-3 p-0">
+                                        <a class="nav-link" data-toggle="pill" href="#manage-contact">
+                                            Manage Contact
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="iq-edit-list-data">
+                        <div class="tab-content">
+                            <div class="tab-pane fade active show" id="personal-information" role="tabpanel">
+                                <div class="iq-card">
+                                    <div class="iq-card-header d-flex justify-content-between">
+                                        <div class="iq-header-title">
+                                            <h4 class="card-title">Personal Information</h4>
+                                        </div>
+                                    </div>
+                                    <div class="iq-card-body">
+                                        <div class="form-group row align-items-center">
+                                            <div class="col-md-12">
+                                                <div class="d-flex profile-img-edit mx-auto">
+                                                    <img class="profile-pic my-avatar" src="" alt="profile-pic">
+                                                    <div class="p-image">
+                                                        <i class="ri-pencil-line upload-button"></i>
+                                                        <input class="file-upload" type="file" accept="image/*"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 mt-3">
+                                                <p class="text-center" id="user-id">
+                                                    <span>UserId: </span>
+                                                    <a href="#" title="copy" id="button-copy-id">
+                                                        <i class="ml-2 ri-clipboard-fill"></i>
+                                                    </a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <form id="form-personal-information">
+                                            <div class="row align-items-center">
+                                                <div class="form-group col-sm-6">
+                                                    <label for="input-first-name">First Name:</label>
+                                                    <input type="text" class="form-control" id="input-first-name" value="" spellcheck="false">
+                                                </div>
+                                                <div class="form-group col-sm-6">
+                                                    <label for="input-last-name">Last Name:</label>
+                                                    <input type="text" class="form-control" id="input-last-name" value="" spellcheck="false">
+                                                </div>
+                                                <div class="form-group col-sm-6">
+                                                    <label for="input-birth-day">Date Of Birth:</label>
+                                                    <input  class="form-control" id="input-birth-day" value="">
+                                                </div>
+                                                <div class="form-group col-sm-6">
+                                                    <label class="d-block">Gender:</label>
+                                                    <div class="custom-control custom-radio custom-control-inline">
+                                                        <input type="radio" id="radio-gender-male" name="radio-gender" class="custom-control-input" value="Male">
+                                                        <label class="custom-control-label" for="radio-gender-male"> Male </label>
+                                                    </div>
+                                                    <div class="custom-control custom-radio custom-control-inline">
+                                                        <input type="radio" id="radio-gender-female" name="radio-gender" class="custom-control-input" value="Female">
+                                                        <label class="custom-control-label" for="radio-gender-female"> Female </label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-sm-6">
+                                                    <label for="select-country">Country:</label>
+                                                    <select class="form-control" id="select-country">
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-sm-6">
+                                                    <label for="input-address">Address</label>
+                                                    <input type="text" class="form-control" id="input-address" maxlength="128" value="" spellcheck="false">
+                                                </div>
+                                                <div class="form-group col-sm-6">
+                                                    <label for="select-languages">Choose Languages...:</label>
+                                                    <select class="form-control" id="select-languages">
+                                                        <option value="0">...</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-sm-6">
+                                                    <label>Languages</label>
+                                                    <div id="show-languages" class="d-flex" style="min-height: 40px; max-height: 60px; overflow: auto" data-max="4">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-sm-6">
+                                                    <label for="input-favorite-quotes">Favorite Quotes</label>
+                                                    <input type="text" id="input-favorite-quotes" class="form-control" maxlength="256" spellcheck="false">
+                                                </div>
+                                                <div class="form-group col-sm-6">
+                                                    <label for="input-other-name">Other Name</label>
+                                                    <input type="text" id="input-other-name" class="form-control" maxlength="64" spellcheck="false">
+                                                </div>
+                                                <div class="form-group col-sm-12">
+                                                    <label for="input-about-me">About Me</label>
+                                                    <textarea class="form-control" id="input-about-me" rows="5" style="line-height: 22px;" maxlength="512" spellcheck="false">
+															</textarea>
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                                            <button type="button" class="btn iq-bg-danger" id="button-reset1">Reset</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="chang-pwd" role="tabpanel">
+                                <div class="iq-card">
+                                    <div class="iq-card-header d-flex justify-content-between">
+                                        <div class="iq-header-title">
+                                            <h4 class="card-title">Change Password</h4>
+                                        </div>
+                                    </div>
+                                    <div class="iq-card-body row">
+                                        <form class="needs-validation w-100" id="form-change-password" novalidate>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="form-group">
+                                                        <label for="input-new-password">New Password:</label>
+                                                        <input type="Password" class="form-control pass" id="input-new-password" value="" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required>
+                                                        <div class="invalid-feedback">
+                                                            Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="input-verify-password">Confirm Password:</label>
+                                                        <input type="Password" class="form-control pass" id="input-verify-password" value="" required>
+                                                        <div class="invalid-feedback" id="invalid-password-confirmation">Password confirmation doesn't match</div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                                                    <button type="reset" class="btn iq-bg-danger">Cancel</button>
+                                                </div>
+                                                <div class="col-6 d-flex">
+                                                    <div class="mx-auto my-auto">
+                                                        <div class="form-group">
+                                                            <a href="#" class="float-right" id="button-get-verification-code">Send code to my email <i class="ri-mail-send-line"></i></a>
+                                                            <input type="text" id="input-verification-code" class="form-control" placeholder="Enter the verification code here" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="history" role="tabpanel">
+                                <div class="iq-card">
+                                    <div class="iq-card-header d-flex justify-content-between">
+                                        <div class="iq-header-title">
+                                            <h4 class="card-title">History</h4>
+                                        </div>
+                                    </div>
+                                    <div class="iq-card-body d-flex justify-content-center" id="area-show-history" style="max-height: 420px; overflow-y: auto">
+                                        <ul class="container timeline col-10">
+
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="manage-contact" role="tabpanel">
+                                <div class="iq-card">
+                                    <div class="iq-card-header d-flex justify-content-between">
+                                        <div class="iq-header-title">
+                                            <h4 class="card-title">Manage Contact</h4>
+                                        </div>
+                                    </div>
+                                    <div class="iq-card-body">
+                                        <form id="form-update-information-contact" class="needs-validation" novalidate>
+                                            <div class="row justify-content-center mb-4">
+                                                <ul class="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
+                                                    <li class="text-center pr-3">
+                                                        <a href="" data-social="facebook" data-regex="^$|(?:(?:http|https):\/\/)?(?:www.)?facebook.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[?\w\-]*\/)?(?:profile.php\?id=(?=\d.*))?([\w\-]*)?" class="link-social"><img src="images/icon/08.png" class="img-fluid rounded" alt="Facebook"></a>
+                                                    </li>
+                                                    <li class="text-center pr-3">
+                                                        <a href="" data-social="twitter" data-regex="^$|(?:http:\/\/)?(?:www\.)?twitter\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-]*)" class="link-social"><img src="images/icon/09.png" class="img-fluid rounded" alt="Twitter"></a>
+                                                    </li>
+                                                    <li class="text-center pr-3">
+                                                        <a href="" data-social="instagram" data-regex="^$|(?:(?:http|https):\/\/)?(?:www\.)?(?:instagram\.com|instagr\.am)\/([A-Za-z0-9-_\.]+)" class="link-social"><img src="images/icon/10.png" class="img-fluid rounded" alt="Instagram"></a>
+                                                    </li>
+                                                    <li class="text-center pr-3">
+                                                        <a href="" data-social="googlePlus" data-regex="^$|((http|https):\/\/)?(www[.])?plus\.google\.com\/.?\/?.?\/?([0-9]*)" class="link-social"><img src="images/icon/11.png" class="img-fluid rounded" alt="Google"></a>
+                                                    </li>
+                                                    <li class="text-center pr-3">
+                                                        <a href="" data-social="youtube" data-regex="^$|^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.?be)\/.+$" class="link-social"><img src="images/icon/12.png" class="img-fluid rounded" alt="Youtube"></a>
+                                                    </li>
+                                                    <li class="text-center pr-3">
+                                                        <a href="" data-social="linkedin" data-regex="^$|^https:\/\/[a-z]{2,3}\.linkedin\.com\/.*$" class="link-social"><img src="images/icon/13.png" class="img-fluid rounded" alt="Linkedin"></a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="row justify-content-center">
+                                                <div class="form-group row col-sm-6">
+                                                    <label for="email" class="col-4 col-form-label">Email:</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control" id="email" value="youtobe.hoanghai@gmail.com" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center">
+                                                <div class="form-group row col-sm-6">
+                                                    <label for="cno" class="col-4 col-form-label">Contact Number:</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control" id="cno" value="" pattern="^$|[0-9]{6,10}">
+                                                        <div class="invalid-feedback">
+                                                            Phone numbers start from 0 to 9 and appear 6 to 10 times
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center">
+                                                <div class="form-group row col-sm-6">
+                                                    <label for="url-website" class="col-4 col-form-label">Url:</label>
+                                                    <div class="col-8">
+                                                        <input type="text" class="form-control" id="url-website" value="" pattern="^$|^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$">
+                                                        <div class="invalid-feedback">
+                                                            The url is not valid
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center">
+                                                <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                                                <button type="button" class="btn iq-bg-danger" id="button-reset-info-contact">Reset</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Wrapper END -->
+<!-- Footer -->
+<footer class="bg-white iq-footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6">
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item"><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li class="list-inline-item"><a href="/page/qanda">Questions And Answers</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-6 text-right">
+                Copyright 2020 <a href="#">SocialV</a> All Rights Reserved.
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- Footer END -->
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-ui.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<!-- Appear JavaScript -->
+<script src="js/jquery.appear.js"></script>
+<!-- Countdown JavaScript -->
+<script src="js/countdown.min.js"></script>
+<!-- Counterup JavaScript -->
+<script src="js/waypoints.min.js"></script>
+<script src="js/jquery.counterup.min.js"></script>
+<!-- Wow JavaScript -->
+<script src="js/wow.min.js"></script>
+<!-- Apexcharts JavaScript -->
+<script src="js/apexcharts.js"></script>
+<!-- Slick JavaScript -->
+<script src="js/slick.min.js"></script>
+<!-- Select2 JavaScript -->
+<script src="js/select2.min.js"></script>
+<!-- Owl Carousel JavaScript -->
+<script src="js/owl.carousel.min.js"></script>
+<!-- Magnific Popup JavaScript -->
+<script src="js/jquery.magnific-popup.min.js"></script>
+<!-- Smooth Scrollbar JavaScript -->
+<script src="js/smooth-scrollbar.js"></script>
+<!-- lottie JavaScript -->
+<script src="js/lottie.js"></script>
+<!-- Chart Custom JavaScript -->
+<script src="js/chart-custom.js"></script>
+<!-- Websocket -->
+<script src="js/sockjs.min.js"></script>
+<script src="js/stomp.min.js"></script>
+<!-- Custom JavaScript -->
+<script src="js/jquery.selectric.min.js"></script>
+<script src="js/croppie.min.js"></script>
+<script src="js/ScrollMagic.min.js"></script>
+<script src="js/custom.js"></script>
+<script src="js/custom/setting.js"></script>
+</body>
+</html>

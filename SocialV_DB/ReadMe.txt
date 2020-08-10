@@ -1,0 +1,1 @@
+mongorestore --db dbn "path" [--authenticationDatabase admin --username xxx --password xxx](nếu cần)

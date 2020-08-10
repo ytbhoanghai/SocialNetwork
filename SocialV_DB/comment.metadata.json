@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"SocialV_DB.comment"}],"uuid":"62aae2b868f04f58a14e5a8e3a492a69"}

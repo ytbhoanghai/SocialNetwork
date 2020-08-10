@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"SocialV_DB.personalRelationship"}],"uuid":"2df1b543692140ddb3d7a5b1f3b0e943"}

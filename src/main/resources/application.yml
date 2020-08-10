@@ -1,0 +1,40 @@
+server:
+  port: 8443
+  ssl:
+    key-alias: ytbhoanghai
+    key-password: hoanghai1018
+    key-store: src/main/resources/ssl-server.jks
+    key-store-password: hoanghai1018
+    key-store-type: pkcs12
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      database: SocialV_DB
+      host: 127.0.0.1
+      password: hoanghai1018
+      port: 27017
+      username: ytbhoanghai
+  mail:
+    host: smtp.gmail.com
+    password: socialytb1018
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          starttls:
+            enable: true
+          timeout: 5000
+          writetimeout: 5000
+    username: social.ytb5
+  redis:
+    host: 127.0.0.1
+    password: ''
+    port: 6379
+  session:
+    redis:
+      flush-mode: on_save
+      namespace: spring:session
+    store-type: redis
