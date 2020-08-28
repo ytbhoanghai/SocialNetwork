@@ -472,7 +472,7 @@
                 let e = $(` <li class="col-md-4 col-6 pl-2 pr-0 pb-3 new-photo">
                                    <div class="user-images position-relative overflow-hidden">
                                       <a href="${postLink}">
-                                        <img src="${url+"+350"}" alt="gallary-image" class="img-fluid rounded" data-url=""/>
+                                        <img src="${url+"-200x200"}" alt="gallary-image" class="img-fluid rounded" data-url=""/>
                                       </a>
                                    </div>
                              </li>`);
@@ -509,7 +509,7 @@
                         let html = $(`<div class="col-md-6 col-lg-3 mb-3">
                                            <div class="user-images position-relative overflow-hidden">
                                               <a href="${postLink}">
-                                              <img src="${url+"+H350"}" class="rounded" alt="Responsive image" style="width: 100%; height: 149px; object-fit: cover">
+                                              <img src="${url+"-800x533"}" class="img-fluid rounded" alt="Responsive image">
                                               </a>
                                               <div class="image-hover-data">
                                                  <div class="product-elements-icon">
@@ -1401,6 +1401,55 @@
             reader.readAsDataURL(files[i]);
         }
         reader.onload = async function (e) {
+            if (files.length >= 3) {
+                drawCase3(e);
+                t.find('div:eq(0)')
+                    .removeClass('col-lg-12 col-md-12')
+                    .addClass('col-lg-6 col-md-6');
+            } else if (files.length === 2) {
+                drawCase2(e);
+                t.find('div:eq(0)')
+                    .removeClass('col-lg-12 col-md-12')
+                    .addClass('col-lg-6 col-md-6');
+            } else if (files.length === 1) {
+                t.find('div:eq(0)')
+                    .removeClass('col-lg-6 col-md-6')
+                    .addClass('col-lg-12 col-md-12');
+                drawCase1(e);
+            }
+        };
+
+        async function drawCase1(e) {
+            await drawImage0(e.target.result).then(_ => {
+                addImageToModalShowImagePost(e.target.result, i);
+            });
+        }
+        async function drawCase2(e) {
+            if (i === 0) {
+                await base64ImageSmartCrop(e.target.result, 483, 725).then(function (base64) {
+                    let html = $(`<img src="${base64}" class="img-fluid mb-4 rounded" alt="">`),
+                        t = $('#area-show-photo-post');
+
+                    html.on('click', function (event) {
+                        event.preventDefault();
+                        showModalImagePost(0);
+                    });
+
+                    t.find('div:eq(0)').append(html);
+                }).then(_ => {
+                    addImageToModalShowImagePost(e.target.result, i);
+                });
+            } else if (i === 1) {
+                await drawImage2(e.target.result).then(_ => {
+                    addImageToModalShowImagePost(e.target.result, i);
+                });
+            }
+            i += 1;
+            if (files[i]) {
+                reader.readAsDataURL(files[i]);
+            }
+        }
+        async function drawCase3(e) {
             if (i === 0) {
                 await drawImage1(e.target.result).then(_ => {
                     addImageToModalShowImagePost(e.target.result, i);
@@ -1425,11 +1474,29 @@
             if (files[i]) {
                 reader.readAsDataURL(files[i]);
             }
-        };
+        }
 
     });
 
     // draw functions
+    function drawImage0(_base64, replace) {
+        return new Promise(resolve => {
+            let html = $(`<img src="${_base64}" class="img-fluid mb-4 rounded" alt="">`),
+                t = $('#area-show-photo-post');
+
+            html.on('click', function (event) {
+                event.preventDefault();
+                showModalImagePost(0);
+            });
+            if (replace) {
+                t.find('div:eq(0) > img:eq(0)').replaceWith(html);
+            } else {
+                t.find('div:eq(0)').append(html);
+            }
+            resolve();
+        })
+    }
+
     function drawImage1(_base64, replace) {
         return base64ImageSmartCrop(_base64, 483, 321).then(function (base64) {
             let html = $(`<img src="${base64}" class="img-fluid mb-4 rounded" alt="">`),
@@ -1952,7 +2019,7 @@
                     titleHeader.append(text);
                 }
             }
-            if (ofMe && type !== 'SHARED_POST') {
+            if (ofMe) {
                 let temp = $(`<div class="iq-card-post-toolbar ml-2">
                                   <div class="dropdown">
                                      <span class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
@@ -2622,7 +2689,7 @@
                 inputComment.attr('data-idComment-reply', id);
 
                 $('html, body').animate({
-                    scrollTop: inputComment.offset().top + $(window).height() / 2
+                    scrollTop: inputComment.offset().top - ( $(window).height() - $(this).outerHeight(true) ) / 2
                 }, 1000);
             });
             firstPlace ? area.prepend(html) : area.append(html);

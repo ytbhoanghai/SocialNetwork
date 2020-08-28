@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -22,7 +23,7 @@ public class FileController {
     }
 
     @GetMapping(value = "avatar/{id}")
-    public ResponseEntity<?> getAvatar(@PathVariable String id) {
+    public ResponseEntity<?> getAvatar(@PathVariable String id) throws IOException {
         byte[] data = fileService.getAvatar(id);
         String fileName = fileService.getFileNameAvatar(id);
         HttpHeaders httpHeaders = getHttpHeadersForImageType(fileName, data.length, false);
@@ -30,7 +31,7 @@ public class FileController {
     }
 
     @GetMapping(value = "background/{id}")
-    public ResponseEntity<?> getBackground(@PathVariable String id) {
+    public ResponseEntity<?> getBackground(@PathVariable String id) throws IOException {
         byte[] data = fileService.getBackground(id);
         String fileName = fileService.getFileNameBackground(id);
         HttpHeaders httpHeaders = getHttpHeadersForImageType(fileName, data.length, false);
@@ -38,7 +39,7 @@ public class FileController {
     }
 
     @GetMapping(value = "work-place/{id}")
-    public ResponseEntity<?> getImageWorkPlace(@PathVariable String id) {
+    public ResponseEntity<?> getImageWorkPlace(@PathVariable String id) throws IOException {
         byte[] data = fileService.getWorkPlace(id);
         String fileName = fileService.getFileNameWorkPlace(id);
         HttpHeaders httpHeaders = getHttpHeadersForImageType(fileName, data.length, true);
@@ -46,7 +47,7 @@ public class FileController {
     }
 
     @GetMapping(value = "college/{id}")
-    public ResponseEntity<?> getImageCollege(@PathVariable String id) {
+    public ResponseEntity<?> getImageCollege(@PathVariable String id) throws IOException {
         byte[] data = fileService.getCollege(id);
         String fileName = fileService.getFileNameCollege(id);
         HttpHeaders httpHeaders = getHttpHeadersForImageType(fileName, data.length, true);
@@ -54,7 +55,7 @@ public class FileController {
     }
 
     @GetMapping(value = "place-lived/{id}")
-    public ResponseEntity<?> getImagePlaceLived(@PathVariable String id) {
+    public ResponseEntity<?> getImagePlaceLived(@PathVariable String id) throws IOException {
         byte[] data = fileService.getPlaceLived(id);
         String fileName = fileService.getFileNamePlaceLived(id);
         HttpHeaders httpHeaders = getHttpHeadersForImageType(fileName, data.length, true);
@@ -62,7 +63,7 @@ public class FileController {
     }
 
     @GetMapping(value = "feeling/{id}")
-    public ResponseEntity<?> getImageFeeling(@PathVariable String id) {
+    public ResponseEntity<?> getImageFeeling(@PathVariable String id) throws IOException {
         byte[] data = fileService.getFeeling(id);
         String fileName = fileService.getFileNameFeeling(id);
         HttpHeaders httpHeaders = getHttpHeadersForImageType(fileName, data.length,true);
@@ -72,7 +73,7 @@ public class FileController {
     }
 
     @GetMapping(value = "photo/{id}")
-    public ResponseEntity<?> getPhoto(@PathVariable String id) {
+    public ResponseEntity<?> getPhoto(@PathVariable String id) throws IOException {
         byte[] data = fileService.getPhoto(id);
         String fileName = fileService.getFileNamePhoto(id);
         HttpHeaders httpHeaders = getHttpHeadersForImageType(fileName, data.length, true);

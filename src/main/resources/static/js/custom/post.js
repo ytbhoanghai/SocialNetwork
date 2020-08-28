@@ -156,7 +156,7 @@
                     titleHeader.append(text);
                 }
             }
-            if (ofMe && type !== 'SHARED_POST') {
+            if (ofMe) {
                 let temp = $(`<div class="iq-card-post-toolbar ml-2">
                                   <div class="dropdown">
                                      <span class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
@@ -839,7 +839,7 @@
                 inputComment.attr('data-idComment-reply', id);
 
                 $('html, body').animate({
-                    scrollTop: inputComment.offset().top + $(window).height() / 2
+                    scrollTop: inputComment.offset().top - ( $(window).height() - $(this).outerHeight(true) ) / 2
                 }, 1000);
             });
             firstPlace ? area.prepend(html) : area.append(html);

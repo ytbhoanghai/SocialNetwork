@@ -1,7 +1,9 @@
 package com.nguyenhai.demo.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nguyenhai.demo.Entity.InfoUser;
 import com.nguyenhai.demo.Service.ChatService;
+import com.nguyenhai.demo.Service.InfoUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
@@ -22,10 +24,12 @@ import java.security.Principal;
 public class ChatController {
 
     private ChatService chatService;
+    private InfoUserService infoUserService;
 
     @Autowired
-    public ChatController(ChatService chatService) {
+    public ChatController(ChatService chatService, InfoUserService infoUserService) {
         this.chatService = chatService;
+        this.infoUserService = infoUserService;
     }
 
     @GetMapping
@@ -49,6 +53,7 @@ public class ChatController {
     public ResponseEntity<?> deleteChatBox(@RequestParam String idUser, Principal principal) {
         String email = principal.getName();
         chatService.deleteChatBox(idUser, email);
+
         return ResponseEntity.ok("chat box deleted successfully !!!");
     }
 

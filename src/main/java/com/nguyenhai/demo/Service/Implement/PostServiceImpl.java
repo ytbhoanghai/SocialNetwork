@@ -8,15 +8,18 @@ import com.nguyenhai.demo.Exception.InfoUserNotFoundException;
 import com.nguyenhai.demo.Exception.PostCanNotSharedException;
 import com.nguyenhai.demo.Exception.PostNotFoundException;
 import com.nguyenhai.demo.Form.PostForm;
-import com.nguyenhai.demo.Repository.*;
+import com.nguyenhai.demo.Repository.CommentRepository;
+import com.nguyenhai.demo.Repository.FeelingRepository;
+import com.nguyenhai.demo.Repository.PlaceLivedRepository;
+import com.nguyenhai.demo.Repository.PostRepository;
 import com.nguyenhai.demo.Response.BasicUserInfoResponse;
 import com.nguyenhai.demo.Response.CommentResponse;
 import com.nguyenhai.demo.Response.PostResponse;
 import com.nguyenhai.demo.Service.*;
+import com.nguyenhai.demo.Util.CropImageSmartUtil;
 import net.coobird.thumbnailator.Thumbnails;
-import net.coobird.thumbnailator.filters.ImageFilter;
 import net.coobird.thumbnailator.resizers.configurations.Antialiasing;
-import net.coobird.thumbnailator.util.ThumbnailatorUtils;
+import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,17 +27,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
+import java.lang.reflect.Array;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.Principal;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.nguyenhai.demo.Entity.Notification.Type.*;
@@ -54,6 +56,8 @@ public class PostServiceImpl implements PostService {
     private FileService fileService;
     private NotificationService notificationService;
 
+    private CropImageSmartUtil cropImageSmartUtil;
+
     @Autowired
     public PostServiceImpl(PostRepository postRepository,
                            CommentRepository commentRepository,
@@ -62,7 +66,8 @@ public class PostServiceImpl implements PostService {
                            PhotoGroupService photoGroupService,
                            InfoUserService infoUserService,
                            FileService fileService,
-                           NotificationService notificationService) {
+                           NotificationService notificationService,
+                           CropImageSmartUtil cropImageSmartUtil) {
 
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
@@ -72,6 +77,8 @@ public class PostServiceImpl implements PostService {
         this.infoUserService = infoUserService;
         this.fileService = fileService;
         this.notificationService = notificationService;
+
+        this.cropImageSmartUtil = cropImageSmartUtil;
     }
 
     @Override
@@ -84,7 +91,9 @@ public class PostServiceImpl implements PostService {
                     String id = UUID.randomUUID().toString();
                     try {
                         return saveAndConvertBase64ToImage(s, id);
-                    } catch (IOException e) { return null; }
+                    } catch (IOException e) {
+                        return fileService.generatePhotoDefault();
+                    }
                 })
                 .collect(Collectors.toList());
 
@@ -176,6 +185,12 @@ public class PostServiceImpl implements PostService {
                         InfoUser u = infoUserService.findById(post1.getIdAuthor());
                         deletePost(post1.getId(), u.getEmail());
                     });
+        }
+        if (post.getType() == SHARED_POST) {
+            Post origin = postRepository.findById(post.getIdSharedPost())
+                    .orElseThrow(() -> new PostNotFoundException(post.getIdSharedPost()));
+            origin.getInteractive().get(SHARE).removeIf(s -> s.equals(user.getId()));
+            postRepository.save(origin);
         }
 
         commentRepository.deleteByIdPost(post.getId());
@@ -800,18 +815,32 @@ public class PostServiceImpl implements PostService {
     }
 
     private String saveAndConvertBase64ToImage(String base64, String id) throws IOException {
-        InputStream origin = new ByteArrayInputStream(Base64.getDecoder().decode(base64));
-        InputStream origin1 = new ByteArrayInputStream(Base64.getDecoder().decode(base64));
-        InputStream origin2 = new ByteArrayInputStream(Base64.getDecoder().decode(base64));
+        List<CropImageSmartUtil.Resolution> resolutions = Arrays.asList(
+                new CropImageSmartUtil.Resolution(800, 533),
+                new CropImageSmartUtil.Resolution(200, 200));
 
-        Path path = Paths.get(FileService.PATH_SAVE_PHOTO.replace("{fileName}",  fileService.getFileNamePhoto(id)));
-        Thumbnails.of(origin).width(1200).outputQuality(0.8F).outputFormat("jpg").toFile(path.toString());
+        List<CropImageSmartUtil.ResultCropImage> resultCropImages = cropImageSmartUtil.crop(base64, resolutions);
 
-        Path path1 = Paths.get(FileService.PATH_SAVE_PHOTO.replace("{fileName}",  fileService.getFileNamePhoto(id + "+350")));
-        Thumbnails.of(origin1).size(350, 350).keepAspectRatio(false).outputFormat("jpg").toFile(path1.toString());
+        // default
+        BufferedImage origin = ImageIO.read(new ByteArrayInputStream(Base64.getDecoder().decode(base64)));
+        resultCropImages.add(new CropImageSmartUtil.ResultCropImage(
+                new CropImageSmartUtil.Resolution(origin.getWidth(), origin.getHeight()),
+                origin));
 
-        Path path2 = Paths.get(FileService.PATH_SAVE_PHOTO.replace("{fileName}",  fileService.getFileNamePhoto(id + "+H350")));
-        Thumbnails.of(origin2).height(350).outputQuality(1f).antialiasing(Antialiasing.ON).outputFormat("jpg").toFile(path2.toString());
+        for (int i = 0; i < resultCropImages.size(); i++) {
+            CropImageSmartUtil.ResultCropImage resultCropImage = resultCropImages.get(i);
+            String fileName = fileService.getFileNamePhoto(id + "-" + resultCropImage.getResolution());
+            if (i == resultCropImages.size() - 1) {
+                fileName = fileService.getFileNamePhoto(id);
+            }
+            File file = fileService.getFileInResource(FileService.PATH_SAVE_PHOTO.replace("{fileName}",  fileName));
+            if (file.createNewFile()) {
+                Thumbnails.of(resultCropImage.getBufferedImage())
+                        .outputQuality(1F)
+                        .size(resultCropImage.getResolution().getX(), resultCropImage.getResolution().getY())
+                        .toFile(file);
+            }
+        }
 
         return "/file/photo/" + id;
     }
@@ -823,4 +852,5 @@ public class PostServiceImpl implements PostService {
                 .map(c -> convertCommentToCommentResponse(c, userId))
                 .collect(Collectors.toList());
     }
+
 }

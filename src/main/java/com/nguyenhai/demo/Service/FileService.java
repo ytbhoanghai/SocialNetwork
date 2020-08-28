@@ -3,24 +3,24 @@ package com.nguyenhai.demo.Service;
 import com.nguyenhai.demo.Exception.FileNotFoundException;
 import org.springframework.scheduling.annotation.Async;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 public interface FileService {
 
     String FORMAT_IMAGE_DEFAULT = "jpg";
 
     String API_GENERATE_IMAGE_BY_NAME = "https://ui-avatars.com/api/?name=%s&background=50b5ff&color=fff&size=350&length=1";
-    String BACKGROUND_FOR_EVERYONE = "src/main/resources/static/images/page-img/profile-bg1.jpg";
+    String BACKGROUND_FOR_EVERYONE = "dynamic/default/profile-bg1.jpg";
 
-    String PATH_SAVE_AVATAR_DEFAULT = "src/main/resources/dynamic/images/avatar/{fileName}";
-    String PATH_SAVE_BACKGROUND_DEFAULT = "src/main/resources/dynamic/images/background/{fileName}";
-    String PATH_SAVE_WORK_PLACE_DEFAULT = "src/main/resources/dynamic/images/work-place/{fileName}";
-    String PATH_SAVE_COLLEGE_DEFAULT = "src/main/resources/dynamic/images/college/{fileName}";
-    String PATH_SAVE_PLACE_LIVED_DEFAULT = "src/main/resources/dynamic/images/place-lived/{fileName}";
-    String PATH_SAVE_FEELING_DEFAULT = "src/main/resources/dynamic/images/feeling/{fileName}";
-    String PATH_SAVE_IMAGE_TEMP = "src/main/resources/dynamic/images/temp/{fileName}";
-    String PATH_SAVE_PHOTO = "src/main/resources/dynamic/images/photo/{fileName}";
+    String PATH_SAVE_AVATAR_DEFAULT = "dynamic/images/avatar/{fileName}";
+    String PATH_SAVE_BACKGROUND_DEFAULT = "dynamic/images/background/{fileName}";
+    String PATH_SAVE_WORK_PLACE_DEFAULT = "dynamic/images/work-place/{fileName}";
+    String PATH_SAVE_COLLEGE_DEFAULT = "dynamic/images/college/{fileName}";
+    String PATH_SAVE_PLACE_LIVED_DEFAULT = "dynamic/images/place-lived/{fileName}";
+    String PATH_SAVE_FEELING_DEFAULT = "dynamic/images/feeling/{fileName}";
+    String PATH_SAVE_IMAGE_TEMP = "dynamic/images/temp/{fileName}";
+    String PATH_SAVE_PHOTO = "dynamic/images/photo/{fileName}";
 
     String PATTERN_URI_DOWNLOAD_AVATAR = "/file/avatar/{idUser}";
     String PATTERN_URI_DOWNLOAD_BACKGROUND = "/file/background/{idUser}";
@@ -45,19 +45,23 @@ public interface FileService {
 
     default String getFileNameBackground(String id) { return id + "." + FileService.FORMAT_IMAGE_DEFAULT; }
 
-    byte[] getPhoto(String id);
+    byte[] getPhoto(String id) throws IOException;
 
-    byte[] getAvatar(String id) throws FileNotFoundException;
+    byte[] getAvatar(String id) throws FileNotFoundException, IOException;
 
-    byte[] getBackground(String id) throws FileNotFoundException;
+    byte[] getBackground(String id) throws FileNotFoundException, IOException;
 
-    byte[] getWorkPlace(String id);
+    byte[] getWorkPlace(String id) throws IOException;
 
-    byte[] getCollege(String id);
+    byte[] getCollege(String id) throws IOException;
 
-    byte[] getPlaceLived(String id);
+    byte[] getPlaceLived(String id) throws IOException;
 
-    byte[] getFeeling(String id);
+    byte[] getFeeling(String id) throws IOException;
+
+    File getFileInResource(String arg) throws IOException;
+
+    String generatePhotoDefault();
 
     @Async("generateFileTaskExecutor")
     void generateAvatarByName(String name, String idUser) throws IOException;

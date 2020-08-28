@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"SocialV_DB.jobPosition"}],"uuid":"69881e50391d43b89731d0106949b639"}

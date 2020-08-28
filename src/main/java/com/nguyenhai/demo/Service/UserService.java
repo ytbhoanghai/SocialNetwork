@@ -31,6 +31,8 @@ public interface UserService {
 
     List<BasicUserInfoResponse> getListUserOnline(String id, Integer page, Integer number);
 
+    List<BasicUserInfoResponse> getListBasicFriendInfoByTerm(String term, String email);
+
     List<PostResponse> getPost(String id, Integer page, Integer number, String email);
 
     List<PostResponse> getNextPost(String idUser, String idPost, Integer number, String email);

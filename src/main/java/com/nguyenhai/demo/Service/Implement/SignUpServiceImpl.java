@@ -2,9 +2,11 @@ package com.nguyenhai.demo.Service.Implement;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.nguyenhai.demo.Entity.Account;
+import com.nguyenhai.demo.Entity.Country;
 import com.nguyenhai.demo.Entity.FriendRequest;
 import com.nguyenhai.demo.Entity.InfoUser;
 import com.nguyenhai.demo.Form.SignUpForm;
+import com.nguyenhai.demo.Repository.CountryRepository;
 import com.nguyenhai.demo.Response.SignUpSuccessResponse;
 import com.nguyenhai.demo.Service.*;
 import com.nguyenhai.demo.Util.SequenceGeneratorUtil;
@@ -25,17 +27,20 @@ public class SignUpServiceImpl implements SignUpService {
     private InfoUserService infoUserService;
     private FriendRequestService friendRequestService;
     private FileService fileService;
+    private CountryRepository countryRepository;
 
     @Autowired
     public SignUpServiceImpl(AccountService accountService,
                              InfoUserService infoUserService,
                              FriendRequestService friendRequestService,
-                             FileService fileService) {
+                             FileService fileService,
+                             CountryRepository countryRepository) {
 
         this.accountService = accountService;
         this.infoUserService = infoUserService;
         this.friendRequestService = friendRequestService;
         this.fileService = fileService;
+        this.countryRepository = countryRepository;
     }
 
     @Override
@@ -71,6 +76,7 @@ public class SignUpServiceImpl implements SignUpService {
         }
         Account account = Account.build(id, email, password, typeLogin);
         InfoUser infoUser = InfoUser.build(id, email, firstName, lastName);
+        infoUser.setCountry(getCountryVietNam());
 
         if (urlAvatar == null) {
             fileService.generateAvatarByName(firstName, id);
@@ -83,5 +89,10 @@ public class SignUpServiceImpl implements SignUpService {
         friendRequestService.save(new FriendRequest(infoUser.getId(), new HashMap<>()));
 
         return new SignUpSuccessResponse(id, email, new Date(System.currentTimeMillis()), "/login");
+    }
+
+    private Country getCountryVietNam() {
+        return countryRepository.findById("192")
+                .orElse(null);
     }
 }

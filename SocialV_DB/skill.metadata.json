@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"SocialV_DB.skill"}],"uuid":"3d5f2a7f6d0e4c3db508612b95b1af88"}

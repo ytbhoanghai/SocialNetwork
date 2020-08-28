@@ -20,4 +20,7 @@ public interface InfoUserService {
     List<InfoUser> findByIdIsIn(List<String> ids);
 
     List<InfoUser> findAllByIdIsNotIn(List<String> ids);
+
+    @Deprecated
+    List<InfoUser> findAllByTerm(String term);
 }

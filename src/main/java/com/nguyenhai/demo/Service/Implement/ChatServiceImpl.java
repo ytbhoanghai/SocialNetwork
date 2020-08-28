@@ -260,7 +260,10 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Async("notificationExecutor")
-    public void sendNewMessageToUser(MessageResponse messageResponse, String email) throws JsonProcessingException {
+    public void sendNewMessageToUser(
+            MessageResponse messageResponse,
+            String email) throws JsonProcessingException {
+
         messageSendingOperations
                 .convertAndSendToUser(
                         email,

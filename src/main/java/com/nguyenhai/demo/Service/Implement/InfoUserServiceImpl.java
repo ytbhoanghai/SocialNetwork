@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service(value = "infoUserService")
 public class InfoUserServiceImpl implements InfoUserService {
@@ -55,6 +56,15 @@ public class InfoUserServiceImpl implements InfoUserService {
     @Override
     public List<InfoUser> findAllByIdIsNotIn(List<String> ids) {
         return infoUserRepository.findAllByIdIsNotIn(ids);
+    }
+
+    @Override
+    public List<InfoUser> findAllByTerm(String term) {
+        return infoUserRepository.findAll().stream()
+                .filter(infoUser -> {
+                    String fullName = infoUser.getFullName().toLowerCase();
+                    return fullName.contains(term.trim().toLowerCase());
+                }).collect(Collectors.toList());
     }
 
 }

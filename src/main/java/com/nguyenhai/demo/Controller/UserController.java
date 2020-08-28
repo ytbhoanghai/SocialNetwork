@@ -49,6 +49,13 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping(value = "basic-info")
+    public ResponseEntity<?> getBasicUserInfoByTerm(@RequestParam String term, Principal principal) {
+        String email = principal.getName();
+        List<BasicUserInfoResponse> responses = userService.getListBasicFriendInfoByTerm(term, email);
+        return ResponseEntity.ok(responses);
+    }
+
     @GetMapping(value = "info-user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getInfoUser(@PathVariable String id, Principal principal) {
         String email = principal.getName();

@@ -1,6 +1,7 @@
 package com.nguyenhai.demo.Util;
 
 import com.nguyenhai.demo.Entity.InfoUser;
+import com.nguyenhai.demo.Exception.InfoUserNotFoundException;
 import com.nguyenhai.demo.Response.BasicUserInfoResponse;
 import com.nguyenhai.demo.Service.InfoUserService;
 import com.nguyenhai.demo.Service.NotificationService;
@@ -120,10 +121,14 @@ public class MonitorUserStatus {
                             setIsOffline((String) k, Type.ID);
                         }
                     } else {
-                        InfoUser user = infoUserService.findById((String) k);
-                        notificationService.notificationUserOffline(
-                                buildBasicUserInfoResponse(user, false, info.getLastAccess()),
-                                getListEmailsFriends(user));
+                        try {
+                            InfoUser user = infoUserService.findById((String) k);
+                            notificationService.notificationUserOffline(
+                                    buildBasicUserInfoResponse(user, false, info.getLastAccess()),
+                                    getListEmailsFriends(user));
+                        } catch (InfoUserNotFoundException e) {
+                            redisTemplate.opsForHash().entries("userMap").remove(k);
+                        }
                     }
                 });
     }

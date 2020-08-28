@@ -31,6 +31,8 @@
 
                     if (notificationResponses.length < 20) {
                         $('#loading-notifications').removeClass('loading-active');
+                    } else {
+                        page += 1;
                     }
                     notificationResponses.forEach(response => {
                         let {

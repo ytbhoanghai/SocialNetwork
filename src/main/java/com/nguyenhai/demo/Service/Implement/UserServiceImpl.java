@@ -212,6 +212,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<BasicUserInfoResponse> getListBasicFriendInfoByTerm(String term, String email) {
+        InfoUser infoUser = infoUserService.findByEmail(email);
+        return infoUserService.findAllByTerm(term).stream()
+                .filter(e -> !e.getBlockedListFriendInfo().containsKey(infoUser.getId()) &&
+                        !e.getId().equals(infoUser.getId()))
+                .map(BasicUserInfoResponse::build)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<PostResponse> getPost(String id, Integer page, Integer number, String email) {
         return postService.getPost(id, page, number, email);
     }

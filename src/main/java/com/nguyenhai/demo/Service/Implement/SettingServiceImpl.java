@@ -8,7 +8,6 @@ import com.nguyenhai.demo.Exception.CountryNotFoundException;
 import com.nguyenhai.demo.Form.ContactInformationForm;
 import com.nguyenhai.demo.Form.NewPasswordForm;
 import com.nguyenhai.demo.Form.PersonalInformationForm;
-import com.nguyenhai.demo.Service.PasswordService;
 import com.nguyenhai.demo.Repository.CountryRepository;
 import com.nguyenhai.demo.Repository.LanguageRepository;
 import com.nguyenhai.demo.Response.ChangePasswordSuccessResponse;
@@ -16,24 +15,21 @@ import com.nguyenhai.demo.Response.UpdateImageSuccessResponse;
 import com.nguyenhai.demo.Service.*;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.resizers.configurations.Antialiasing;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static com.nguyenhai.demo.Service.FileService.FORMAT_IMAGE_DEFAULT;
-import static com.nguyenhai.demo.Service.FileService.PREFIX_PHOTO;
+import static com.nguyenhai.demo.Service.FileService.*;
 
 @Service(value = "settingService")
 public class SettingServiceImpl implements SettingService {
@@ -70,21 +66,24 @@ public class SettingServiceImpl implements SettingService {
     @Override
     public UpdateImageSuccessResponse updateAvatarProfile(InputStream is, String email, Boolean createPost) throws IOException {
         InfoUser me = infoUserService.findByEmail(email);
-        Path path = Paths.get(fileService.PATH_SAVE_AVATAR_DEFAULT.replace("{fileName}", me.getId() + "." + FORMAT_IMAGE_DEFAULT));
+        String fileName = me.getId() + "." + FORMAT_IMAGE_DEFAULT;
+        File file = fileService.getFileInResource(PATH_SAVE_AVATAR_DEFAULT.replace("{fileName}", fileName));
         Thumbnails.of(is)
                 .antialiasing(Antialiasing.ON)
                 .scale(1)
                 .outputQuality(0.8f)
                 .outputFormat("jpg")
-                .toFile(path.toString());
+                .toFile(file);
 
         // for post
         if (createPost) {
             UUID id = UUID.randomUUID();
-            Path path1 = Paths.get(fileService.PATH_SAVE_PHOTO.replace("{fileName}", PREFIX_PHOTO + "-" + id + "." + FORMAT_IMAGE_DEFAULT));
+            String fileName1 = PREFIX_PHOTO + "-" + id + "." + FORMAT_IMAGE_DEFAULT;
+            File fileForPost = fileService.getFileInResource(PATH_SAVE_PHOTO.replace("{fileName}", fileName1));
             InputStream avatar = new ByteArrayInputStream(fileService.getAvatar(me.getId()));
-            Thumbnails.of(avatar).scale(1).outputQuality(1f).outputFormat("jpg").toFile(path1.toString());
-
+            if (fileForPost.createNewFile()) {
+                Thumbnails.of(avatar).scale(1).outputQuality(1f).outputFormat("jpg").toFile(fileForPost);
+            }
             postService.createPostForAvatar("file/photo/" + id, email);
         }
 

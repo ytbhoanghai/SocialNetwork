@@ -1398,6 +1398,48 @@ Index Of Script
             return diffValues + ' ' + t;
         }
 
+        setAutoCompleteInputFriend(function (id, fullName) {
+            window.location.href = `/user?id=${id}`;
+        }, $('#search-box'));
+
+        function setAutoCompleteInputFriend(callbackSelect, e) {
+            let cache = {};
+            e.autocomplete({
+                minLength: 1,
+                source: function (request, response) {
+                    let term = request.term;
+                    if (term in cache) {
+                        response(cache[term]);
+                        return;
+                    }
+
+                    $.getJSON('/user/basic-info', request, function (data) {
+                        cache[term] = data;
+                        response(cache[term]);
+                    })
+                },
+                select: function (event, ui) {
+                    let {
+                            id,
+                            firstName,
+                            lastName
+                        } = ui.item,
+                        fullName = lastName + ' ' + firstName;
+                    e.val(fullName);
+                    callbackSelect(id, fullName);
+                    return false;
+                }
+            }).autocomplete("instance")._renderItem = function (ul, {
+                urlAvatar,
+                firstName,
+                lastName
+            }) {
+                let fullName = lastName + ' ' + firstName;
+                return $('<li>')
+                    .append(`<div class="row w-100"><img src="${urlAvatar}" alt="avatar" class="avatar-30 rounded-circle rol-4 ml-2"><p class="col-8 ml-1">${fullName}</p></div>`)
+                    .appendTo(ul);
+            };
+        }
     });
 
 })(jQuery);

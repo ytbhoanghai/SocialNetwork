@@ -42,7 +42,7 @@
                         let html = $(`<div class="col-md-6 col-lg-4 mb-3">
                                            <div class="user-images position-relative overflow-hidden">
                                               <a href="/${postLink}">
-                                              <img src="${url+"+H350"}" class="rounded" alt="Responsive image" style="width: 100%; height: 149px; object-fit: cover">
+                                              <img src="${url+"-800x533"}" class="img-fluid rounded" alt="Responsive image">
                                               </a>
                                               <div class="image-hover-data">
                                                  <div class="product-elements-icon">

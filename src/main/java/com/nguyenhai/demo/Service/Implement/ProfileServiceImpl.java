@@ -362,14 +362,15 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public UpdateImageSuccessResponse updateBackgroundProfile(InputStream isImage, String email) throws IOException {
         InfoUser me = infoUserService.findByEmail(email);
-        Path path = Paths.get(fileService.PATH_SAVE_BACKGROUND_DEFAULT.replace("{fileName}", me.getId() + "." + fileService.FORMAT_IMAGE_DEFAULT));
+        String fileName = me.getId() + "." + fileService.FORMAT_IMAGE_DEFAULT;
+        File file = fileService.getFileInResource(fileService.PATH_SAVE_BACKGROUND_DEFAULT.replace("{fileName}", fileName));
 
         Thumbnails.of(isImage)
                 .scale(1)
                 .outputQuality(0.7f)
                 .antialiasing(Antialiasing.ON)
                 .outputFormat("jpg")
-                .toFile(path.toString());
+                .toFile(file);
 
         return new UpdateImageSuccessResponse(
                 me.getUrlBackground(),

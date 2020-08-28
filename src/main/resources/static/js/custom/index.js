@@ -12,7 +12,6 @@
     // cache variable
     let buttonAddPhotoToPost = $('#post-modal ul.d-flex.flex-wrap > li:eq(0) > div.iq-bg-primary > a'),
         inputAddPhotoToPost = $('#post-modal ul.d-flex.flex-wrap > li:eq(0) > input'),
-        buttonRemovePhotoPost = $('#button-remove-photo'),
         postModal = $('#post-modal');
 
     let areaShowTagFriendsPost = $('#area-tag-friends-post'),
@@ -128,75 +127,7 @@
         event.preventDefault();
         inputAddPhotoToPost.trigger('click');
     });
-    buttonRemovePhotoPost.on('click', function (event) {
-        event.preventDefault();
-        showModalAcceptAction(function () {
-            let e = $('#modal-show-image'),
-                i = e.find('ol.carousel-indicators li[class="active"]').index(),
-                t1 = e.find(`ol.carousel-indicators li:eq(${i})`),
-                t2 = e.find(`div.carousel-inner div.carousel-item:eq(${i})`),
-                t1Next = t1.next(),
-                t2Next = t2.next();
 
-            t1.remove();
-            t2.remove();
-
-            e.find(`ol.carousel-indicators li`).each((i, v) => {
-                $(v).attr('data-slide-to', i);
-            });
-
-            if (t1Next.length !== 0) {
-                t1Next.addClass('active');
-                t2Next.addClass('active');
-            } else {
-                e.find(`ol.carousel-indicators li:eq(0)`).addClass('active');
-                e.find(`div.carousel-inner div.carousel-item:eq(0)`).addClass('active');
-            }
-
-            let c = e.find(`div.carousel-inner img`);
-            c.each((index, e) => {
-                if (index < 4) {
-                    let base64 = $(e).attr('src');
-                    switch (index) {
-                        case 0:
-                            drawImage1(base64, true);
-                            break;
-                        case 1:
-                            drawImage2(base64, true);
-                            break;
-                        case 2:
-                            drawImage3(base64, true);
-                            break;
-                        case 3:
-                            let l = c.length > 4 ? c.length - 4 : null;
-                            drawImage4(base64, true, l);
-                            break;
-                    }
-                }
-            });
-
-            if (c.length < 4) {
-                let h = $('#area-show-photo-post');
-                for (let run = c.length; run < 4; run++) {
-                    switch (run) {
-                        case 0:
-                            h.find('div:eq(0) img:eq(0)').remove();
-                            e.modal('hide');
-                            break;
-                        case 1:
-                            h.find('div:eq(1) img:eq(0)').remove();
-                            break;
-                        case 2:
-                            h.find('div:eq(0) img:eq(1)').remove();
-                            break;
-                        case 3:
-                            h.find('div:eq(1)').children().eq(1).remove();
-                            break;
-                    }
-                }
-            }
-        })
-    });
     buttonShowAreaTagFriends.on('click', function (event) {
         event.preventDefault();
         areaShowTagFriendsPost.show();
@@ -248,6 +179,55 @@
             reader.readAsDataURL(files[i]);
         }
         reader.onload = async function (e) {
+            if (files.length >= 3) {
+                drawCase3(e);
+                t.find('div:eq(0)')
+                    .removeClass('col-lg-12 col-md-12')
+                    .addClass('col-lg-6 col-md-6');
+            } else if (files.length === 2) {
+                drawCase2(e);
+                t.find('div:eq(0)')
+                    .removeClass('col-lg-12 col-md-12')
+                    .addClass('col-lg-6 col-md-6');
+            } else if (files.length === 1) {
+                t.find('div:eq(0)')
+                    .removeClass('col-lg-6 col-md-6')
+                    .addClass('col-lg-12 col-md-12');
+                drawCase1(e);
+            }
+        };
+
+        async function drawCase1(e) {
+            await drawImage0(e.target.result).then(_ => {
+                addImageToModalShowImagePost(e.target.result, i);
+            });
+        }
+        async function drawCase2(e) {
+            if (i === 0) {
+                await base64ImageSmartCrop(e.target.result, 483, 725).then(function (base64) {
+                    let html = $(`<img src="${base64}" class="img-fluid mb-4 rounded" alt="">`),
+                        t = $('#area-show-photo-post');
+
+                    html.on('click', function (event) {
+                        event.preventDefault();
+                        showModalImagePost(0);
+                    });
+
+                    t.find('div:eq(0)').append(html);
+                }).then(_ => {
+                    addImageToModalShowImagePost(e.target.result, i);
+                });
+            } else if (i === 1) {
+                await drawImage2(e.target.result).then(_ => {
+                    addImageToModalShowImagePost(e.target.result, i);
+                });
+            }
+            i += 1;
+            if (files[i]) {
+                reader.readAsDataURL(files[i]);
+            }
+        }
+        async function drawCase3(e) {
             if (i === 0) {
                 await drawImage1(e.target.result).then(_ => {
                     addImageToModalShowImagePost(e.target.result, i);
@@ -272,11 +252,28 @@
             if (files[i]) {
                 reader.readAsDataURL(files[i]);
             }
-        };
-
+        }
     });
 
     // draw functions
+    function drawImage0(_base64, replace) {
+        return new Promise(resolve => {
+            let html = $(`<img src="${_base64}" class="img-fluid mb-4 rounded" alt="">`),
+                t = $('#area-show-photo-post');
+
+            html.on('click', function (event) {
+                event.preventDefault();
+                showModalImagePost(0);
+            });
+            if (replace) {
+                t.find('div:eq(0) > img:eq(0)').replaceWith(html);
+            } else {
+                t.find('div:eq(0)').append(html);
+            }
+            resolve();
+        })
+    }
+
     function drawImage1(_base64, replace) {
         return base64ImageSmartCrop(_base64, 483, 321).then(function (base64) {
             let html = $(`<img src="${base64}" class="img-fluid mb-4 rounded" alt="">`),
@@ -906,7 +903,7 @@
                     titleHeader.append(text);
                 }
             }
-            if (ofMe && type !== 'SHARED_POST') {
+            if (ofMe) {
                 let temp = $(`<div class="iq-card-post-toolbar ml-2">
                                   <div class="dropdown">
                                      <span class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
@@ -1576,7 +1573,7 @@
                 inputComment.attr('data-idComment-reply', id);
 
                 $('html, body').animate({
-                    scrollTop: inputComment.offset().top + $(window).height() / 2
+                    scrollTop: inputComment.offset().top - ( $(window).height() - $(this).outerHeight(true) ) / 2
                 }, 1000);
             });
             firstPlace ? area.prepend(html) : area.append(html);

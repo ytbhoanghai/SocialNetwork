@@ -2,25 +2,18 @@ package com.nguyenhai.demo.Service.Implement;
 
 import com.nguyenhai.demo.Entity.InfoUser;
 import com.nguyenhai.demo.Service.*;
-import com.nguyenhai.demo.Util.SecurityUtil;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @Service(value = "emailService")
 public class EmailServiceImpl implements EmailService {
@@ -30,19 +23,22 @@ public class EmailServiceImpl implements EmailService {
     private PasswordService passwordService;
     private LogoutService logoutService;
     private LoginService loginService;
+    private FileService fileService;
 
     @Autowired
     public EmailServiceImpl(JavaMailSender javaMailSender,
                             InfoUserService infoUserService,
                             PasswordService passwordService,
                             LogoutService logoutService,
-                            LoginService loginService) {
+                            LoginService loginService,
+                            FileService fileService) {
 
         this.javaMailSender = javaMailSender;
         this.infoUserService = infoUserService;
         this.passwordService = passwordService;
         this.logoutService = logoutService;
         this.loginService = loginService;
+        this.fileService = fileService;
     }
 
     @Override
@@ -80,8 +76,8 @@ public class EmailServiceImpl implements EmailService {
         if (!fileName.contains(".email")) {
             fileName = fileName.concat(".email");
         }
-        Path path = Paths.get("src/main/resources/static/emails/" + fileName);
-        return FileUtils.readFileToString(path.toFile(), "UTF-8");
+        File file = fileService.getFileInResource("dynamic/emails/" + fileName);
+        return FileUtils.readFileToString(file, "UTF-8");
     }
 
     private String getSubject(String fullContent) {
@@ -103,7 +99,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     private String getDomainName() throws UnknownHostException {
-        InetAddress addr = InetAddress.getLocalHost();
-        return "https://" + addr.getHostAddress() + ":8443";
+//        InetAddress addr = InetAddress.getLocalHost();
+        return "ytbsocnet.tk";
     }
 }
